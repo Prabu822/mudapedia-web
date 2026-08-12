@@ -45,7 +45,7 @@ export default function Home() {
   const currentTheme = themes[theme];
 
   return (
-    <main className="min-h-screen bg-[#030305] text-white flex flex-col justify-between p-4 sm:p-6 md:p-8 relative overflow-x-hidden antialiased">
+    <main className="min-h-screen bg-[#030305] text-white p-4 sm:p-6 md:p-8 relative overflow-x-hidden antialiased">
       <AnimatePresence>{showIntro && <HeroIntro onComplete={() => setShowIntro(false)} />}</AnimatePresence>
 
       <NavbarSection theme={theme} setTheme={setTheme} />
@@ -54,7 +54,7 @@ export default function Home() {
 
       <HeroSection currentTheme={currentTheme} />
 
-      {/* Komponen Pricing dengan Indikator Kapsul di dalamnya */}
+      {/* Komponen Pricing */}
       <PricingSection 
         currentTheme={currentTheme} 
         currentSlide={currentSlide} 
