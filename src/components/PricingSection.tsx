@@ -27,8 +27,8 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
       transition={{ duration: 0.6 }}
       className="w-full max-w-7xl mx-auto my-24 mb-32 py-16 px-4 sm:px-6 relative z-20 text-white"
     >
-      {/* KONTANER UTAMA DENGAN TINGGI STABIL */}
-      <div className="relative w-full min-h-[820px] flex items-center">
+      {/* Kontainer Utama dengan Tinggi Stabil */}
+      <div className="relative w-full min-h-[950px] flex items-center">
         <AnimatePresence mode="wait">
           
           {/* ================= SLIDE 0: PAKET LAYANAN ================= */}
@@ -61,7 +61,7 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
                       whileHover={{ scale: 1.04 }}
                       whileTap={{ scale: 0.96 }}
                       onClick={() => setSelectedNetwork(net)}
-                      className={`px-6 py-2.5 rounded-xl font-mono text-xs sm:text-sm font-bold tracking-wider transition-all shadow-md ${
+                      className={`px-6 py-2.5 rounded-xl font-mono text-xs sm:text-sm font-bold tracking-wider transition-all shadow-md cursor-pointer ${
                         selectedNetwork === net 
                           ? `${currentTheme.bgBtn} scale-105` 
                           : "bg-zinc-900 text-zinc-300 border border-zinc-800 hover:bg-zinc-800 hover:text-white"
@@ -107,7 +107,7 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
                     </div>
                   </div>
                   
-                  <button className="w-full py-4 rounded-xl font-bold transition shadow-md bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border border-zinc-700">
+                  <button className="w-full py-4 rounded-xl font-bold transition shadow-md bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border border-zinc-700 cursor-pointer">
                     Pilih Paket Ini
                   </button>
                 </div>
@@ -147,7 +147,7 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
                     </div>
                   </div>
                   
-                  <button className={`w-full py-4 rounded-xl font-bold transition shadow-xl ${currentTheme.bgBtn}`}>
+                  <button className={`w-full py-4 rounded-xl font-bold transition shadow-xl ${currentTheme.bgBtn} cursor-pointer`}>
                     Pilih Paket Ini
                   </button>
                 </div>
@@ -183,7 +183,7 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
                     </div>
                   </div>
                   
-                  <button className="w-full py-4 rounded-xl font-bold transition shadow-md bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border border-zinc-700">
+                  <button className="w-full py-4 rounded-xl font-bold transition shadow-md bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border border-zinc-700 cursor-pointer">
                     Pilih Paket Ini
                   </button>
                 </div>
@@ -233,7 +233,7 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
               className="absolute inset-0 w-full max-w-4xl mx-auto flex items-center justify-center"
             >
               <div className="w-full bg-zinc-950/90 border border-zinc-800/80 rounded-3xl p-12 shadow-2xl flex flex-col items-center justify-center text-center">
-                <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center text-3xl font-bold mb-6 shadow-xl">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center text-3xl font-bold mb-6 shadow-xl text-zinc-950">
                   M
                 </div>
                 <h3 className="text-3xl font-bold font-serif mb-3">MUDAPEDIA DIGITAL INDONESIA</h3>
