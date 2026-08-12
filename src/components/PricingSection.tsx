@@ -25,10 +25,10 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
-      className="w-full max-w-7xl mx-auto my-24 mb-32 py-16 px-4 sm:px-6 relative z-20 text-white"
+      className="w-full max-w-7xl mx-auto my-16 lg:my-24 mb-32 py-8 px-4 sm:px-6 relative z-20 text-white"
     >
-      {/* Kontainer Utama dengan Tinggi Stabil */}
-      <div className="relative w-full min-h-[950px] flex items-center">
+      {/* Kontainer Utama: Menggunakan h-auto agar mengalir normal ke bawah di HP, dan min-h di Laptop */}
+      <div className="relative w-full h-auto lg:min-h-[950px] flex items-center">
         <AnimatePresence mode="wait">
           
           {/* ================= SLIDE 0: PAKET LAYANAN ================= */}
@@ -39,7 +39,7 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="absolute inset-0 w-full flex flex-col justify-center"
+              className="w-full relative lg:absolute lg:inset-0 flex flex-col justify-center"
             >
               {/* Header Section */}
               <div className="text-center space-y-4 mb-12">
@@ -200,7 +200,7 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="absolute inset-0 w-full max-w-4xl mx-auto flex items-center justify-center"
+              className="w-full relative lg:absolute lg:inset-0 max-w-4xl mx-auto flex items-center justify-center"
             >
               <div className="w-full bg-zinc-950/90 border border-zinc-800/80 rounded-3xl p-10 shadow-2xl">
                 <span className="text-xs font-mono text-zinc-500 uppercase tracking-widest block mb-2">FAQ & Support</span>
@@ -230,7 +230,7 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="absolute inset-0 w-full max-w-4xl mx-auto flex items-center justify-center"
+              className="w-full relative lg:absolute lg:inset-0 max-w-4xl mx-auto flex items-center justify-center"
             >
               <div className="w-full bg-zinc-950/90 border border-zinc-800/80 rounded-3xl p-12 shadow-2xl flex flex-col items-center justify-center text-center">
                 <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center text-3xl font-bold mb-6 shadow-xl text-zinc-950">
