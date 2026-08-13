@@ -17,6 +17,15 @@ export default function Home() {
 
   useEffect(() => {
     setMounted(true);
+
+    // Cek apakah pengguna kembali dari halaman alumni
+    const isReturningFromAlumni = sessionStorage.getItem("returnFromAlumni");
+
+    if (isReturningFromAlumni === "true") {
+      setShowIntro(false);      // Matikan animasi intro pembuka
+      setCurrentSlide(1);       // Langsung arahkan ke Slide 1 (Meet Our Team / Gambar 2)
+      sessionStorage.removeItem("returnFromAlumni"); // Bersihkan memori sesi
+    }
   }, []);
 
   if (!mounted) return null;
@@ -46,7 +55,9 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#030305] text-white p-4 sm:p-6 md:p-8 relative overflow-x-hidden antialiased">
-      <AnimatePresence>{showIntro && <HeroIntro onComplete={() => setShowIntro(false)} />}</AnimatePresence>
+      <AnimatePresence>
+        {showIntro && <HeroIntro onComplete={() => setShowIntro(false)} />}
+      </AnimatePresence>
 
       <NavbarSection theme={theme} setTheme={setTheme} />
 
@@ -54,7 +65,6 @@ export default function Home() {
 
       <HeroSection currentTheme={currentTheme} />
 
-      {/* PricingSection yang di dalamnya sudah membungkus Slide Paket, Meet Our Team, dan FAQ */}
       <PricingSection 
         currentTheme={currentTheme} 
         currentSlide={currentSlide} 

@@ -4,7 +4,6 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { tokenPricingData } from "@/data/pricingData";
 import TeamSection from "@/components/TeamSection";
-import AlumniSection from "@/components/AlumniSection";
 
 interface PricingSectionProps {
   currentTheme: {
@@ -21,10 +20,10 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
   const [selectedNetwork, setSelectedNetwork] = useState<"SOLANA" | "SUI" | "ETH" | "BNB" | "TRON">("SOLANA");
   const currentPricing = tokenPricingData[selectedNetwork];
 
+  // Judul slide disederhanakan menjadi 3 saja (Alumni dihapus total dari slider utama)
   const slideTitles = [
     { label: "Paket Layanan" },
     { label: "Meet Our Team" },
-    { label: "Alumni" },
     { label: "FAQ & Support" }
   ];
 
@@ -184,25 +183,10 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
               </motion.div>
             )}
 
-            {/* ================= SLIDE 2: ALUMNI ================= */}
+            {/* ================= SLIDE 2: FAQ & SUPPORT ================= */}
             {currentSlide === 2 && (
               <motion.div
                 key="slide-2"
-                variants={slideVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                transition={transitionProps}
-                className="w-full col-start-1 row-start-1"
-              >
-                <AlumniSection currentTheme={currentTheme} />
-              </motion.div>
-            )}
-
-            {/* ================= SLIDE 3: FAQ & SUPPORT ================= */}
-            {currentSlide === 3 && (
-              <motion.div
-                key="slide-3"
                 variants={slideVariants}
                 initial="hidden"
                 animate="visible"
@@ -223,7 +207,7 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
           </AnimatePresence>
         </div>
 
-        {/* NAVIGASI - Aman di bawah, stabil tanpa naik-turun */}
+        {/* NAVIGASI - Tersisa 3 tombol (01, 02, 03) */}
         <div className="flex items-center justify-center gap-6 mt-16 pt-6 border-t border-zinc-800/60 z-30">
           <button onClick={() => setCurrentSlide(Math.max(0, currentSlide - 1))} disabled={currentSlide === 0} className="px-5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 font-mono text-xs hover:bg-zinc-800 disabled:opacity-30 cursor-pointer">← Sebelumnya</button>
           <div className="flex items-center gap-2">
