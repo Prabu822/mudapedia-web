@@ -54,7 +54,7 @@ export default function Home() {
 
       <HeroSection currentTheme={currentTheme} />
 
-      {/* Komponen Pricing */}
+      {/* PricingSection yang di dalamnya sudah membungkus Slide Paket, Meet Our Team, dan FAQ */}
       <PricingSection 
         currentTheme={currentTheme} 
         currentSlide={currentSlide} 

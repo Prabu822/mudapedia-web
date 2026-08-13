@@ -1,214 +1,155 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
-interface Member {
-  id: number;
-  name: string;
-  role: string;
-  batch: string;
-  avatar: string;
-  socials: {
-    linkedin?: string;
-    instagram?: string;
-    github?: string;
+interface TeamSectionProps {
+  currentTheme: {
+    primary: string;
+    bgBtn: string;
+    border: string;
+    glow: string;
   };
-  contributions: string[];
-  isActiveTop?: boolean;
 }
 
-const membersData: Member[] = [
-  {
-    id: 1,
-    name: "Aina",
-    role: "Lead Frontend Developer",
-    batch: "2026",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80",
-    socials: { linkedin: "#", instagram: "#", github: "#" },
-    contributions: ["Membangun Smart Contract UI", "Optimasi Kecepatan Website", "Integrasi Web3 Wallet"],
-    isActiveTop: true,
+const teamMembers = [
+  { 
+    id: 1, 
+    name: "Joko", 
+    role: "Internship", 
+    category: "magang", 
+    image: "https://res.cloudinary.com/slqx0rzq/image/upload/v1786636264/Screenshot_2025.12.22_11.34.05.209_i4e6e5.png", 
+    bio: "Fokus pada pengembangan frontend & optimasi UI/UX.",
+    linkedin: "https://linkedin.com/in/joko",
+    instagram: "https://instagram.com/joko"
   },
-  {
-    id: 2,
-    name: "Firda",
-    role: "UI/UX & Web3 Researcher",
-    batch: "2026",
-    avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=500&q=80",
-    socials: { linkedin: "#", instagram: "#" },
-    contributions: ["Desain Sistem Tokenomics", "Wireframe Dashboard Kripto", "User Testing & Research"],
-    isActiveTop: true,
+  { 
+    id: 2, 
+    name: "Izza", 
+    role: "Internship", 
+    category: "magang", 
+    image: "https://res.cloudinary.com/slqx0rzq/image/upload/v1786636262/Screenshot_2025.12.11_12.58.21.235_ouoie9.png", 
+    bio: "Mendukung integrasi sistem dan riset data proyek.",
+    linkedin: "https://linkedin.com/in/izza",
+    instagram: "https://instagram.com/izza"
   },
-  {
-    id: 3,
-    name: "Joko",
-    role: "Backend & Smart Contract",
-    batch: "2025",
-    avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=500&q=80",
-    socials: { linkedin: "#", github: "#" },
-    contributions: ["Deploy Kontrak Solana", "Manajemen Database MongoDB", "API Gateway Integration"],
+  { 
+    id: 3, 
+    name: "Zulfa", 
+    role: "Internship", 
+    category: "magang", 
+    image: "https://res.cloudinary.com/slqx0rzq/image/upload/v1786636256/Screenshot_2025.11.29_09.53.15.070_xvm4et.png", 
+    bio: "Mengelola dokumentasi dan kebutuhan fungsional aplikasi.",
+    linkedin: "https://linkedin.com/in/zulfa",
+    instagram: "https://instagram.com/zulfa"
   },
-  {
-    id: 4,
-    name: "Zulfa",
-    role: "Digital Marketing & Content",
-    batch: "2025",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=500&q=80",
-    socials: { instagram: "#", linkedin: "#" },
-    contributions: ["Kampanye Media Sosial Web3", "Whitepaper & Dokumentasi Proyek"],
+  { 
+    id: 4, 
+    name: "Ahmad", 
+    role: "Developer", 
+    category: "tim", 
+    image: "https://res.cloudinary.com/slqx0rzq/image/upload/v1782289057/Screenshot_2026.03.16_00.57.31.882_kqnhpf.png", 
+    bio: "Bertanggung jawab atas arsitektur backend & performa server.",
+    linkedin: "https://linkedin.com/in/ahmad",
+    instagram: "https://instagram.com/ahmad"
   },
 ];
 
-export default function TeamSection() {
-  const [filter, setFilter] = useState("Semua");
-  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+export default function TeamSection({ currentTheme }: TeamSectionProps) {
+  const [activeTab, setActiveTab] = useState<"semua" | "tim" | "magang">("semua");
 
-  const filteredMembers = membersData.filter((member) => {
-    if (filter === "Semua") return true;
-    return member.batch === filter;
+  const filteredMembers = teamMembers.filter((member) => {
+    if (activeTab === "semua") return true;
+    return member.category === activeTab;
   });
 
   return (
-    <section id="tim" className="relative py-28 px-6 bg-[#0A0A0C] text-zinc-100">
-      {/* Subtle Ambient Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-[150px] pointer-events-none"></div>
+    <div className="w-full flex flex-col items-center">
+      <div className="text-center space-y-4 mb-10 w-full">
+        <span className="text-xs font-mono tracking-widest uppercase px-4 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-300">
+          Direktori Talenta
+        </span>
+        <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-zinc-50 font-serif">
+          Meet Our Team
+        </h2>
+        <p className="text-base text-zinc-400 font-sans max-w-xl mx-auto">
+          Orang-orang hebat di balik inovasi dan kesuksesan proyek Genesis.
+        </p>
 
-      <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-emerald-400 text-xs font-semibold tracking-wide mb-6">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>Talenta & Alumni Berbakat</span>
-          </div>
-          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4 text-white">
-            Meet Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-200">Team & Alumni</span>
-          </h2>
-          <p className="text-zinc-300 max-w-xl mx-auto text-sm md:text-base font-normal">
-            Kolaborasi generasi muda terbaik yang siap menghadirkan solusi digital dan teknologi desentralisasi masa depan.
-          </p>
-
-          {/* Tombol Filter Selaras */}
-          <div className="flex justify-center gap-3 mt-8">
-            {["Semua", "2026", "2025"].map((batchYear) => (
-              <button
-                key={batchYear}
-                onClick={() => setFilter(batchYear)}
-                className={`px-5 py-2 rounded-xl text-xs font-semibold transition-all ${
-                  filter === batchYear
-                    ? "bg-zinc-100 text-zinc-950 shadow-md"
-                    : "bg-zinc-900 text-zinc-400 border border-zinc-800 hover:text-white"
-                }`}
-              >
-                {batchYear === "Semua" ? "Semua Angkatan" : `Angkatan ${batchYear}`}
-              </button>
-            ))}
-          </div>
+        <div className="flex flex-wrap justify-center gap-2 pt-4">
+          {(["semua", "tim", "magang"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-5 py-2 rounded-xl font-mono text-xs uppercase tracking-wider transition-all cursor-pointer ${
+                activeTab === tab
+                  ? `${currentTheme.bgBtn} text-zinc-950 font-bold shadow-lg scale-105`
+                  : "bg-zinc-900/80 text-zinc-400 border border-zinc-800 hover:bg-zinc-800 hover:text-white"
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
-
-        {/* Grid Kartu */}
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <AnimatePresence>
-            {filteredMembers.map((member) => (
-              <motion.div
-                layout
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-                key={member.id}
-                onClick={() => setSelectedMember(member)}
-                className="group relative bg-zinc-900/80 border border-zinc-800 rounded-3xl p-6 cursor-pointer hover:border-zinc-700 transition"
-              >
-                {member.isActiveTop && (
-                  <span className="absolute top-4 right-4 px-2.5 py-1 rounded-full text-[10px] font-bold bg-zinc-800 text-zinc-200 border border-zinc-700 uppercase tracking-wider">
-                    Top Active
-                  </span>
-                )}
-                <div className="w-20 h-20 rounded-2xl overflow-hidden mx-auto mb-4 border border-zinc-800 group-hover:border-zinc-600 transition">
-                  <img src={member.avatar} alt={member.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
-                </div>
-                <div className="text-center">
-                  <h3 className="font-bold text-lg text-white group-hover:text-zinc-200 transition">{member.name}</h3>
-                  <p className="text-xs text-zinc-400 mb-3">{member.role}</p>
-                  <span className="inline-block px-3 py-1 rounded-lg bg-zinc-950 text-[11px] font-semibold text-zinc-400 border border-zinc-800">
-                    Batch {member.batch}
-                  </span>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
       </div>
 
-      {/* MODAL POPUP DETAIL */}
-      <AnimatePresence>
-        {selectedMember && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="relative w-full max-w-lg bg-zinc-900 border border-zinc-800 rounded-3xl p-6 md:p-8 text-white shadow-2xl"
-            >
-              <button
-                onClick={() => setSelectedMember(null)}
-                className="absolute top-5 right-5 w-8 h-8 rounded-full bg-zinc-800 text-zinc-400 flex items-center justify-center hover:bg-zinc-100 hover:text-zinc-950 font-bold transition"
-              >
-                ✕
-              </button>
-
-              <div className="flex items-center space-x-4 mb-6">
-                <img
-                  src={selectedMember.avatar}
-                  alt={selectedMember.name}
-                  className="w-16 h-16 rounded-2xl object-cover border border-zinc-700"
-                />
-                <div>
-                  <h3 className="text-xl font-bold text-white">{selectedMember.name}</h3>
-                  <p className="text-sm text-zinc-300">{selectedMember.role}</p>
-                  <p className="text-xs text-zinc-500">Angkatan / Batch {selectedMember.batch}</p>
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <h4 className="text-xs font-semibold tracking-wider text-zinc-400 uppercase mb-3">
-                  Kontribusi Proyek Utama:
-                </h4>
-                <ul className="space-y-2">
-                  {selectedMember.contributions.map((item, index) => (
-                    <li key={index} className="text-xs font-medium bg-zinc-950 px-4 py-2.5 rounded-xl border border-zinc-800 flex items-center space-x-3 text-zinc-300">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div>
-                <h4 className="text-xs font-semibold tracking-wider text-zinc-400 uppercase mb-3">
-                  Tautan Sosial / Profesional:
-                </h4>
-                <div className="flex space-x-3">
-                  {selectedMember.socials.linkedin && (
-                    <a href={selectedMember.socials.linkedin} className="px-4 py-2 rounded-xl bg-zinc-800 text-zinc-300 border border-zinc-700 text-xs font-semibold hover:bg-zinc-100 hover:text-zinc-950 transition">
-                      LinkedIn
-                    </a>
-                  )}
-                  {selectedMember.socials.instagram && (
-                    <a href={selectedMember.socials.instagram} className="px-4 py-2 rounded-xl bg-zinc-800 text-zinc-300 border border-zinc-700 text-xs font-semibold hover:bg-zinc-100 hover:text-zinc-950 transition">
-                      Instagram
-                    </a>
-                  )}
-                  {selectedMember.socials.github && (
-                    <a href={selectedMember.socials.github} className="px-4 py-2 rounded-xl bg-zinc-800 text-zinc-300 border border-zinc-700 text-xs font-semibold hover:bg-zinc-100 hover:text-zinc-950 transition">
-                      GitHub
-                    </a>
-                  )}
-                </div>
-              </div>
-            </motion.div>
+      <div className="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch min-h-100">
+        {filteredMembers.length > 0 ? (
+          filteredMembers.map((member, index) => (
+            <div key={member.id}>
+              {placeholderCard(member, index, currentTheme)}
+            </div>
+          ))
+        ) : (
+          <div className="col-span-full flex items-center justify-center py-20 text-zinc-500 font-mono text-sm">
+            Tidak ada data untuk kategori ini.
           </div>
         )}
-      </AnimatePresence>
-    </section>
+      </div>
+    </div>
+  );
+}
+
+function placeholderCard(member: any, index: number, currentTheme: any) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: index * 0.05 }}
+      whileHover={{ y: -4 }}
+      className="bg-zinc-950/80 border border-zinc-800/80 hover:border-zinc-700 rounded-3xl p-6 flex flex-col sm:flex-row items-center gap-6 shadow-xl backdrop-blur-md transition-all group h-full"
+    >
+      <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0 relative overflow-hidden group-hover:border-zinc-700 transition">
+        <div className="absolute inset-0 bg-linear-to-br from-zinc-800/20 to-transparent opacity-50" />
+        {member.image ? (
+          <img src={member.image} alt={member.name} className="w-full h-full object-cover z-10" />
+        ) : (
+          <span className="text-xs font-mono text-zinc-500 text-center px-2 z-10">[Foto Anggota]</span>
+        )}
+      </div>
+
+      <div className="flex flex-col justify-between h-full w-full text-center sm:text-left">
+        <div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-1">
+            <h3 className="text-xl font-bold text-zinc-100 font-serif">{member.name}</h3>
+            <span className={`text-xs font-mono uppercase tracking-wider px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 ${currentTheme.primary} w-fit mx-auto sm:mx-0`}>
+              {member.role}
+            </span>
+          </div>
+          <p className="text-xs text-zinc-400 mt-2 font-sans leading-relaxed">
+            {member.bio}
+          </p>
+        </div>
+
+        <div className="flex items-center justify-center sm:justify-start gap-2 pt-4 mt-4 border-t border-zinc-900">
+          <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-xs font-mono text-zinc-400 hover:text-white hover:bg-zinc-800 transition">
+            in
+          </a>
+          <a href={member.instagram} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-xs font-mono text-zinc-400 hover:text-white hover:bg-zinc-800 transition">
+            ig
+          </a>
+        </div>
+      </div>
+    </motion.div>
   );
 }
