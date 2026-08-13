@@ -18,13 +18,12 @@ export default function Home() {
   useEffect(() => {
     setMounted(true);
 
-    // Cek apakah pengguna kembali dari halaman alumni
     const isReturningFromAlumni = sessionStorage.getItem("returnFromAlumni");
 
     if (isReturningFromAlumni === "true") {
-      setShowIntro(false);      // Matikan animasi intro pembuka
-      setCurrentSlide(1);       // Langsung arahkan ke Slide 1 (Meet Our Team / Gambar 2)
-      sessionStorage.removeItem("returnFromAlumni"); // Bersihkan memori sesi
+      setShowIntro(false);
+      setCurrentSlide(1);
+      sessionStorage.removeItem("returnFromAlumni");
     }
   }, []);
 
@@ -54,7 +53,8 @@ export default function Home() {
   const currentTheme = themes[theme];
 
   return (
-    <main className="min-h-screen bg-[#030305] text-white p-4 sm:p-6 md:p-8 relative overflow-x-hidden antialiased">
+    // Menggunakan min-h-screen dan overflow-x-hidden yang aman untuk sentuhan mobile iOS
+    <main className="w-full min-h-screen bg-[#030305] text-white p-4 sm:p-6 md:p-8 relative overflow-x-hidden">
       <AnimatePresence>
         {showIntro && <HeroIntro onComplete={() => setShowIntro(false)} />}
       </AnimatePresence>
