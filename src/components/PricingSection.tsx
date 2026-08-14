@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { tokenPricingData } from "@/data/pricingData";
 import TeamSection from "@/components/TeamSection";
+import GallerySection from "@/components/GallerySection"; // Memanggil komponen galeri yang sudah dipisah
 
 interface PricingSectionProps {
   currentTheme: {
@@ -20,14 +21,12 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
   const [selectedNetwork, setSelectedNetwork] = useState<"SOLANA" | "SUI" | "ETH" | "BNB" | "TRON">("SOLANA");
   const currentPricing = tokenPricingData[selectedNetwork];
 
-  // Judul slide disederhanakan menjadi 3 saja (Alumni dihapus total dari slider utama)
   const slideTitles = [
     { label: "Paket Layanan" },
     { label: "Meet Our Team" },
-    { label: "FAQ & Support" }
+    { label: "Galeri Instagram" }
   ];
 
-  // Menggunakan transisi fade murni tanpa pergerakan (y: 0) agar layar tidak naik-turun sama sekali
   const slideVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
@@ -38,6 +37,7 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
 
   return (
     <motion.section 
+      id="team-section-wrapper"
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -46,7 +46,6 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
     >
       <div className="relative w-full flex flex-col">
         
-        {/* Kontainer Grid Tumpuk dengan alur tinggi stabil mutlak */}
         <div className="relative w-full grid grid-cols-1 grid-rows-1 items-start">
           <AnimatePresence mode="wait">
             
@@ -172,6 +171,7 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
             {currentSlide === 1 && (
               <motion.div
                 key="slide-1"
+                id="team"
                 variants={slideVariants}
                 initial="hidden"
                 animate="visible"
@@ -183,7 +183,7 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
               </motion.div>
             )}
 
-            {/* ================= SLIDE 2: FAQ & SUPPORT ================= */}
+            {/* ================= SLIDE 2: GALERI INSTAGRAM (DIPISAH KE COMPONENT) ================= */}
             {currentSlide === 2 && (
               <motion.div
                 key="slide-2"
@@ -192,22 +192,16 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
                 animate="visible"
                 exit="exit"
                 transition={transitionProps}
-                className="w-full max-w-4xl mx-auto col-start-1 row-start-1 flex items-center justify-center py-12"
+                className="w-full col-start-1 row-start-1"
               >
-                <div className={`w-full bg-zinc-950/90 border ${currentTheme.border} rounded-3xl p-10 shadow-2xl backdrop-blur-md`}>
-                  <h3 className="text-3xl font-bold font-serif mb-4">FAQ & Support</h3>
-                  <div className="space-y-4 text-zinc-400 text-sm">
-                    <p>1. Bagaimana cara memulai? Hubungi kami.</p>
-                    <p>2. Apakah jaringan didukung? Ya.</p>
-                  </div>
-                </div>
+                <GallerySection currentTheme={currentTheme} />
               </motion.div>
             )}
 
           </AnimatePresence>
         </div>
 
-        {/* NAVIGASI - Tersisa 3 tombol (01, 02, 03) */}
+        {/* NAVIGASI - 3 Tombol Utama (01, 02, 03) */}
         <div className="flex items-center justify-center gap-6 mt-16 pt-6 border-t border-zinc-800/60 z-30">
           <button onClick={() => setCurrentSlide(Math.max(0, currentSlide - 1))} disabled={currentSlide === 0} className="px-5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 font-mono text-xs hover:bg-zinc-800 disabled:opacity-30 cursor-pointer">← Sebelumnya</button>
           <div className="flex items-center gap-2">
