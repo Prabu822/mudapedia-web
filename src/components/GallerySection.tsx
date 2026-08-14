@@ -36,7 +36,7 @@ export default function GallerySection({ currentTheme }: GallerySectionProps) {
 
   return (
     <div className="w-full flex flex-col items-center">
-      {/* Header dengan Animasi Muncul dari Atas */}
+      {/* Header */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -46,7 +46,6 @@ export default function GallerySection({ currentTheme }: GallerySectionProps) {
       >
         <h2 className="text-3xl sm:text-5xl font-extrabold text-white mb-6">Galeri Instagram</h2>
         
-        {/* Tombol Pindah Halaman dengan Efek Tombol Interaktif */}
         <div className="flex justify-center items-center gap-3">
           <motion.button 
             whileHover={{ scale: 1.05 }}
@@ -76,7 +75,7 @@ export default function GallerySection({ currentTheme }: GallerySectionProps) {
         </div>
       </motion.div>
 
-      {/* AnimatePresence untuk Transisi Mulus Saat Berganti Halaman */}
+      {/* Grid Container */}
       <AnimatePresence mode="wait">
         <motion.div 
           key={galleryPage}
@@ -84,7 +83,7 @@ export default function GallerySection({ currentTheme }: GallerySectionProps) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -15 }}
           transition={{ duration: 0.3 }}
-          className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6"
+          className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
         >
           {activeData.map((item, index) => (
             <motion.a 
@@ -101,23 +100,25 @@ export default function GallerySection({ currentTheme }: GallerySectionProps) {
                 whileHover={{ y: -6, scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ duration: 0.2 }}
-                className="bg-zinc-950/40 border border-zinc-800/60 rounded-2xl overflow-hidden shadow-xl h-full flex flex-col transition-all group-hover:border-zinc-600 backdrop-blur-sm"
+                className="bg-zinc-950/60 border border-zinc-800/60 rounded-2xl overflow-hidden shadow-xl flex flex-col transition-all group-hover:border-zinc-500 backdrop-blur-sm"
               >
-                {/* Container Gambar Full di Belakang dengan Efek Zoom & Gradasi */}
-                <div className="w-full h-64 sm:h-72 overflow-hidden bg-zinc-950 relative flex flex-col justify-end">
+                {/* Menggunakan aspect-video agar ukuran tinggi otomatis menyesuaikan lebar layar HP & PC */}
+                <div className="w-full aspect-video sm:h-56 overflow-hidden bg-zinc-900 relative flex flex-col justify-end">
+                  
+                  {/* Gambar Utama dengan object-cover yang aman */}
                   <motion.img 
                     src={item.img} 
                     alt={item.title} 
                     whileHover={{ scale: 1.08 }}
-                    transition={{ duration: 0.5, ease: "easeInOut" }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
                     className="absolute inset-0 w-full h-full object-cover" 
                   />
                   
-                  {/* Efek gradasi gelap transparan di bagian bawah agar teks mudah dibaca (Tailwind v4 compatible) */}
-                  <div className="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-950/40 to-transparent opacity-90 group-hover:opacity-95 transition-opacity" />
+                  {/* Gradasi gelap di bagian bawah untuk memperjelas teks */}
+                  <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-zinc-950 via-zinc-950/80 to-transparent z-10 pointer-events-none" />
 
-                  {/* Judul Postingan Menumpang di Atas Foto */}
-                  <div className="p-4 sm:p-5 relative z-10">
+                  {/* Judul Postingan */}
+                  <div className="p-4 relative z-20">
                     <h4 className="text-sm sm:text-base font-bold text-zinc-100 leading-snug line-clamp-2 group-hover:text-emerald-400 transition-colors">
                       {item.title}
                     </h4>
