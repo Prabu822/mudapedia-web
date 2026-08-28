@@ -12,7 +12,7 @@ interface AlumniSectionProps {
   onBackToTeam?: () => void;
 }
 
-// Data galeri foto alumni (Cukup masukkan URL Cloudinary di sini)
+// Data galeri foto alumni
 const alumniPhotos = [
   { id: 1, image: "https://res.cloudinary.com/slqx0rzq/image/upload/v1786636475/images_7_pafbyo.jpg" },
   { id: 2, image: "https://res.cloudinary.com/slqx0rzq/image/upload/v1786636402/1381020_xusu4c.png" },
@@ -28,7 +28,7 @@ export default function AlumniSection({ currentTheme, onBackToTeam }: AlumniSect
         {onBackToTeam && (
           <button
             onClick={onBackToTeam}
-            className="mb-4 px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 font-mono text-xs uppercase hover:bg-zinc-800 transition cursor-pointer"
+            className={`mb-4 px-4 py-2 rounded-xl bg-zinc-900 border ${currentTheme.border} text-zinc-300 font-mono text-xs uppercase hover:bg-zinc-800 transition cursor-pointer`}
           >
             ← Kembali ke Meet Our Team
           </button>
@@ -53,14 +53,16 @@ export default function AlumniSection({ currentTheme, onBackToTeam }: AlumniSect
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: index * 0.05 }}
             whileHover={{ scale: 1.03 }}
-            className="aspect-square rounded-3xl bg-zinc-900 border border-zinc-800 overflow-hidden relative shadow-xl group cursor-pointer"
+            className={`aspect-square rounded-3xl bg-zinc-900 border ${currentTheme.border} overflow-hidden relative shadow-xl group cursor-pointer`}
           >
             <img 
               src={item.image} 
               alt="Foto Alumni" 
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
             />
-            <div className="absolute inset-0 bg-linear-to-t from-zinc-950/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            {/* Efek gradasi transparan dan glow yang menyesuaikan tema utama */}
+            <div className={`absolute inset-0 bg-linear-to-t from-zinc-950/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity`} />
+            <div className={`absolute inset-0 ${currentTheme.glow} opacity-0 group-hover:opacity-40 transition-opacity pointer-events-none`} />
           </motion.div>
         ))}
       </div>

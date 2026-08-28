@@ -18,8 +18,12 @@ export default function Home() {
   useEffect(() => {
     setMounted(true);
 
-    const isReturningFromAlumni = sessionStorage.getItem("returnFromAlumni");
+    const savedTheme = localStorage.getItem("selectedTheme") as "emerald" | "violet" | "cyan";
+    if (savedTheme && ["emerald", "violet", "cyan"].includes(savedTheme)) {
+      setTheme(savedTheme);
+    }
 
+    const isReturningFromAlumni = sessionStorage.getItem("returnFromAlumni");
     if (isReturningFromAlumni === "true") {
       setShowIntro(false);
       setCurrentSlide(1);
@@ -27,7 +31,14 @@ export default function Home() {
     }
   }, []);
 
-  if (!mounted) return null;
+  const handleThemeChange = (newTheme: "emerald" | "violet" | "cyan") => {
+    setTheme(newTheme);
+    localStorage.setItem("selectedTheme", newTheme);
+  };
+
+  if (!mounted) {
+    return <div className="fixed inset-0 bg-[#030305] z-9999" />;
+  }
 
   const themes = {
     emerald: {
@@ -53,25 +64,45 @@ export default function Home() {
   const currentTheme = themes[theme];
 
   return (
-    // Menggunakan min-h-screen dan overflow-x-hidden yang aman untuk sentuhan mobile iOS
-    <main className="w-full min-h-screen bg-[#030305] text-white p-4 sm:p-6 md:p-8 relative overflow-x-hidden">
+    <main 
+      className={`w-full min-h-screen bg-[#030305] text-white p-4 sm:p-6 md:p-8 relative space-y-16 ${
+        showIntro ? "h-screen overflow-hidden" : "overflow-x-hidden"
+      }`}
+    >
       <AnimatePresence>
         {showIntro && <HeroIntro onComplete={() => setShowIntro(false)} />}
       </AnimatePresence>
 
-      <NavbarSection theme={theme} setTheme={setTheme} />
+      <NavbarSection theme={theme} setTheme={handleThemeChange} />
 
-      <ClientTicker />
+      <ClientTicker currentTheme={currentTheme} />
 
-      <HeroSection currentTheme={currentTheme} />
+      {/* Bagian Tentang Kami */}
+      <section id="tentang-kami">
+        <HeroSection currentTheme={currentTheme} />
+      </section>
 
-      <PricingSection 
-        currentTheme={currentTheme} 
-        currentSlide={currentSlide} 
-        setCurrentSlide={setCurrentSlide} 
-      />
+      {/* Bagian Tim Kami */}
+      <section id="tim-kami">
+        {/* Tempat komponen tim Anda */}
+      </section>
 
-      <FooterSection />
+      {/* Bagian Harga */}
+      <section id="harga">
+        <PricingSection 
+          currentTheme={currentTheme} 
+          currentSlide={currentSlide} 
+          setCurrentSlide={setCurrentSlide} 
+        />
+      </section>
+
+      {/* Bagian Galeri */}
+      <section id="galeri" className="w-full py-2">
+        {/* Tempat komponen galeri jika ada */}
+      </section>
+
+      {/* Kirim setCurrentSlide ke FooterSection agar tombol Galeri, Harga, dll berfungsi penuh */}
+      <FooterSection setCurrentSlide={setCurrentSlide} />
     </main>
   );
 }

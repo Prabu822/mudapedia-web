@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 interface GallerySectionProps {
   currentTheme: {
-    bgBtn: string;
+    bgBtn: string; // Warna background tombol tema aktif dari navbar utama
   };
 }
 
@@ -36,16 +36,17 @@ export default function GallerySection({ currentTheme }: GallerySectionProps) {
 
   return (
     <div className="w-full flex flex-col items-center">
-      {/* Header */}
+      {/* Header Galeri */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
-        className="text-center mb-10 sm:mb-14"
+        className="text-center mb-10 sm:mb-14 w-full flex flex-col items-center"
       >
         <h2 className="text-3xl sm:text-5xl font-extrabold text-white mb-6">Galeri Instagram</h2>
         
+        {/* Tombol Pindah Halaman yang warnanya sinkron dengan tema utama */}
         <div className="flex justify-center items-center gap-3">
           <motion.button 
             whileHover={{ scale: 1.05 }}
@@ -53,7 +54,7 @@ export default function GallerySection({ currentTheme }: GallerySectionProps) {
             onClick={() => setGalleryPage(0)}
             className={`px-5 py-2.5 rounded-xl font-bold transition text-sm sm:text-base cursor-pointer shadow-md ${
               galleryPage === 0 
-                ? `${currentTheme.bgBtn} text-zinc-950 shadow-lg` 
+                ? `${currentTheme?.bgBtn || "bg-white text-zinc-950"} shadow-lg` 
                 : "bg-zinc-900 text-zinc-300 border border-zinc-800 hover:bg-zinc-800"
             }`}
           >
@@ -66,7 +67,7 @@ export default function GallerySection({ currentTheme }: GallerySectionProps) {
             onClick={() => setGalleryPage(1)}
             className={`px-5 py-2.5 rounded-xl font-bold transition text-sm sm:text-base cursor-pointer shadow-md ${
               galleryPage === 1 
-                ? `${currentTheme.bgBtn} text-zinc-950 shadow-lg` 
+                ? `${currentTheme?.bgBtn || "bg-white text-zinc-950"} shadow-lg` 
                 : "bg-zinc-900 text-zinc-300 border border-zinc-800 hover:bg-zinc-800"
             }`}
           >
@@ -102,10 +103,7 @@ export default function GallerySection({ currentTheme }: GallerySectionProps) {
                 transition={{ duration: 0.2 }}
                 className="bg-zinc-950/60 border border-zinc-800/60 rounded-2xl overflow-hidden shadow-xl flex flex-col transition-all group-hover:border-zinc-500 backdrop-blur-sm"
               >
-                {/* Menggunakan aspect-video agar ukuran tinggi otomatis menyesuaikan lebar layar HP & PC */}
                 <div className="w-full aspect-video sm:h-56 overflow-hidden bg-zinc-900 relative flex flex-col justify-end">
-                  
-                  {/* Gambar Utama dengan object-cover yang aman */}
                   <motion.img 
                     src={item.img} 
                     alt={item.title} 
@@ -114,10 +112,8 @@ export default function GallerySection({ currentTheme }: GallerySectionProps) {
                     className="absolute inset-0 w-full h-full object-cover" 
                   />
                   
-                  {/* Gradasi gelap di bagian bawah untuk memperjelas teks */}
                   <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-zinc-950 via-zinc-950/80 to-transparent z-10 pointer-events-none" />
 
-                  {/* Judul Postingan */}
                   <div className="p-4 relative z-20">
                     <h4 className="text-sm sm:text-base font-bold text-zinc-100 leading-snug line-clamp-2 group-hover:text-emerald-400 transition-colors">
                       {item.title}

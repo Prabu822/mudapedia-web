@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { tokenPricingData } from "@/data/pricingData";
 import TeamSection from "@/components/TeamSection";
-import GallerySection from "@/components/GallerySection"; // Memanggil komponen galeri yang sudah dipisah
+import GallerySection from "@/components/GallerySection";
 
 interface PricingSectionProps {
   currentTheme: {
@@ -183,7 +183,7 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
               </motion.div>
             )}
 
-            {/* ================= SLIDE 2: GALERI INSTAGRAM (DIPISAH KE COMPONENT) ================= */}
+            {/* ================= SLIDE 2: GALERI INSTAGRAM ================= */}
             {currentSlide === 2 && (
               <motion.div
                 key="slide-2"
@@ -202,7 +202,7 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
         </div>
 
         {/* NAVIGASI - 3 Tombol Utama (01, 02, 03) */}
-        <div className="flex items-center justify-center gap-6 mt-16 pt-6 border-t border-zinc-800/60 z-30">
+        <div className="flex items-center justify-center gap-6 mt-16 pt-6 z-30">
           <button onClick={() => setCurrentSlide(Math.max(0, currentSlide - 1))} disabled={currentSlide === 0} className="px-5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 font-mono text-xs hover:bg-zinc-800 disabled:opacity-30 cursor-pointer">← Sebelumnya</button>
           <div className="flex items-center gap-2">
             {slideTitles.map((_, i) => (
@@ -211,6 +211,10 @@ export default function PricingSection({ currentTheme, currentSlide, setCurrentS
           </div>
           <button onClick={() => setCurrentSlide(Math.min(slideTitles.length - 1, currentSlide + 1))} disabled={currentSlide === slideTitles.length - 1} className={`px-5 py-2.5 rounded-xl font-mono text-xs cursor-pointer ${currentTheme.bgBtn} text-zinc-950 font-bold shadow-md disabled:opacity-30`}>Selanjutnya →</button>
         </div>
+
+        {/* Garis Pemisah (Border) dipindah ke bawah tombol navigasi */}
+        <div className="w-full border-t border-zinc-800/60 mt-6" />
+
       </div>
     </motion.section>
   );

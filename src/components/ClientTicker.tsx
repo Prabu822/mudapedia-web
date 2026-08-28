@@ -3,6 +3,15 @@
 import { motion } from "framer-motion";
 import { Globe, Shield, Zap, Diamond, Rocket, Cpu } from "lucide-react";
 
+interface ClientTickerProps {
+  currentTheme: {
+    primary: string;
+    bgBtn: string;
+    border: string;
+    glow: string;
+  };
+}
+
 const partners = [
   { name: "Official Pavo", icon: Globe },
   { name: "Nagapara", icon: Shield },
@@ -12,15 +21,15 @@ const partners = [
   { name: "Core Engine", icon: Cpu },
 ];
 
-export default function ClientTicker() {
+export default function ClientTicker({ currentTheme }: ClientTickerProps) {
   // Gandakan array agar pergerakan infinitenya mulus
   const duplicatedPartners = [...partners, ...partners, ...partners];
 
   return (
-    <div className="w-full bg-[#030305] border-y border-zinc-900 py-4 overflow-hidden relative z-20 my-4">
-      {/* Efek gradasi pudar di sisi kiri dan kanan */}
-      <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[#030305] to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[#030305] to-transparent z-10 pointer-events-none" />
+    <div className="w-full bg-[#030305] border-y border-zinc-950 py-4 overflow-hidden relative z-20 my-4">
+      {/* Efek gradasi pudar di sisi kiri dan kanan (menggunakan bg-linear-to-r) */}
+      <div className="absolute left-0 top-0 bottom-0 w-20 bg-linear-to-r from-[#030305] to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-20 bg-linear-to-l from-[#030305] to-transparent z-10 pointer-events-none" />
 
       <div className="flex overflow-hidden whitespace-nowrap">
         <motion.div
@@ -40,8 +49,8 @@ export default function ClientTicker() {
                 key={index}
                 className="flex items-center space-x-3 px-4 py-1.5 rounded-lg bg-zinc-950/40 border border-zinc-900/60 hover:border-zinc-800 transition-all"
               >
-                {/* Ikon dengan warna aksen */}
-                <Icon className="w-4 h-4 text-emerald-500/80" />
+                {/* Ikon warnanya otomatis mengikuti tema aktif */}
+                <Icon className={`w-4 h-4 ${currentTheme.primary}`} />
                 
                 <span className="text-xs sm:text-sm font-mono tracking-wider font-medium text-zinc-300">
                   {partner.name}

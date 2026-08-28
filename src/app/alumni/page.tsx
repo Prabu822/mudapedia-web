@@ -1,13 +1,28 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
-const currentTheme = {
-  primary: "text-emerald-400 font-semibold",
-  bgBtn: "bg-emerald-500 text-zinc-950 hover:bg-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)]",
-  border: "border-emerald-500/40",
-  glow: "bg-emerald-500/15",
+const themes = {
+  emerald: {
+    primary: "text-emerald-400 font-semibold",
+    bgBtn: "bg-emerald-500 text-zinc-950 hover:bg-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)]",
+    border: "border-emerald-500/40",
+    glow: "bg-emerald-500/15",
+  },
+  violet: {
+    primary: "text-violet-400 font-semibold",
+    bgBtn: "bg-violet-500 text-zinc-950 hover:bg-violet-400 shadow-[0_0_20px_rgba(139,92,246,0.3)]",
+    border: "border-violet-500/40",
+    glow: "bg-violet-500/15",
+  },
+  cyan: {
+    primary: "text-cyan-400 font-semibold",
+    bgBtn: "bg-cyan-500 text-zinc-950 hover:bg-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.3)]",
+    border: "border-cyan-500/40",
+    glow: "bg-cyan-500/15",
+  },
 };
 
 const alumniMembers = [
@@ -41,6 +56,17 @@ const alumniMembers = [
 ];
 
 export default function AlumniPage() {
+  const [currentThemeKey, setCurrentThemeKey] = useState<"emerald" | "violet" | "cyan">("emerald");
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("selectedTheme") as "emerald" | "violet" | "cyan";
+    if (savedTheme && themes[savedTheme]) {
+      setCurrentThemeKey(savedTheme);
+    }
+  }, []);
+
+  const currentTheme = themes[currentThemeKey];
+
   return (
     <div className="w-full min-h-screen bg-zinc-950 text-zinc-50 py-16 px-4 sm:px-6 flex flex-col items-center">
       {/* Tombol kembali langsung mengarah ke beranda bagian team (#team) */}
@@ -74,7 +100,7 @@ export default function AlumniPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: index * 0.05 }}
             whileHover={{ y: -4 }}
-            className="w-full bg-zinc-950/80 border border-zinc-800/80 hover:border-zinc-700 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6 shadow-xl backdrop-blur-md transition-all group"
+            className={`w-full bg-zinc-950/80 border border-zinc-800/80 hover:border-zinc-700 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6 shadow-xl backdrop-blur-md transition-all group`}
           >
             <div className="w-32 h-32 sm:w-36 sm:h-36 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0 relative overflow-hidden group-hover:border-zinc-700 transition">
               <div className="absolute inset-0 bg-linear-to-br from-zinc-800/20 to-transparent opacity-50" />
@@ -89,7 +115,8 @@ export default function AlumniPage() {
               <div>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                   <h3 className="text-2xl sm:text-3xl font-bold text-zinc-100 font-serif">{alumni.name}</h3>
-                  <span className={`text-base font-mono uppercase tracking-wider px-3.5 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 ${currentTheme.primary} w-fit mx-auto sm:mx-0`}>
+                  {/* Ditambahkan whitespace-nowrap dan ukuran teks yang pas agar tetap rapi dalam satu baris */}
+                  <span className={`text-xs sm:text-sm font-mono uppercase tracking-wider px-3.5 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 ${currentTheme.primary} whitespace-nowrap w-fit mx-auto sm:mx-0`}>
                     {alumni.role}
                   </span>
                 </div>
