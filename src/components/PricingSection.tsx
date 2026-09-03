@@ -16,76 +16,95 @@ export default function PricingSection({ currentSlide, setCurrentSlide }: Pricin
   const currentPricing = tokenPricingData[selectedNetwork];
   const [galleryPage, setGalleryPage] = useState<number>(0);
 
-  // Total 8 urutan tahap langkah slide
-  const totalSlides = [
-    { type: "pricing", network: "SOLANA", label: "Paket Solana" },
-    { type: "pricing", network: "SUI", label: "Paket Sui" },
-    { type: "pricing", network: "ETH", label: "Paket Eth" },
-    { type: "pricing", network: "BNB", label: "Paket Bnb" },
-    { type: "pricing", network: "TRON", label: "Paket Tron" },
-    { type: "team", label: "Meet Our Team" },
-    { type: "gallery", page: 0, label: "Galeri Halaman 1" },
-    { type: "gallery", page: 1, label: "Galeri Halaman 2" }
+  // Total urutan langkah step-by-step
+  const totalSteps = [
+    { type: "pricing", network: "SOLANA", mainTab: 0, label: "Paket Solana" },
+    { type: "pricing", network: "SUI", mainTab: 0, label: "Paket Sui" },
+    { type: "pricing", network: "ETH", mainTab: 0, label: "Paket Eth" },
+    { type: "pricing", network: "BNB", mainTab: 0, label: "Paket Bnb" },
+    { type: "pricing", network: "TRON", mainTab: 0, label: "Paket Tron" },
+    { type: "team", mainTab: 1, label: "Meet Our Team" },
+    { type: "gallery", mainTab: 2, page: 0, label: "Galeri Halaman 1" },
+    { type: "gallery", mainTab: 2, page: 1, label: "Galeri Halaman 2" }
   ];
 
   const isTransitioning = useRef(false);
   const sectionRef = useRef<HTMLElement>(null);
-
-  // Ref untuk mendeteksi nilai terbaru di dalam event listener
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  
   const currentSlideRef = useRef(currentSlide);
   currentSlideRef.current = currentSlide;
 
   const touchStartY = useRef<number>(0);
 
-  // --- LOGIKA SCROLL-LOCKING & TOUCH SWIPE (DESKTOP & MOBILE) ---
+  const applyStepData = (index: number) => {
+    setCurrentSlide(index);
+    const target = totalSteps[index];
+    if (target.type === "pricing") {
+      setSelectedNetwork(target.network as any);
+    } else if (target.type === "gallery") {
+      setGalleryPage(target.page as number);
+    }
+    // Reset posisi inner scroll ke atas setiap kali ganti slide/step
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
+  };
+
   useEffect(() => {
     const sectionEl = sectionRef.current;
     if (!sectionEl) return;
 
-    // 1. Handler untuk Mouse Wheel (Desktop)
+    // Helper untuk mengecek apakah kontainer internal sudah mentok atas/bawah
+    const isScrollAtTop = () => {
+      if (!scrollContainerRef.current) return true;
+      return scrollContainerRef.current.scrollTop <= 2;
+    };
+
+    const isScrollAtBottom = () => {
+      if (!scrollContainerRef.current) return true;
+      const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
+      return scrollTop + clientHeight >= scrollHeight - 2;
+    };
+
+    // Handler Desktop (Mouse Wheel)
     const handleWheel = (e: WheelEvent) => {
       if (e.deltaY > 0) {
-        if (currentSlideRef.current < totalSlides.length - 1) {
-          e.preventDefault(); 
+        // Scroll ke bawah: Jika konten internal belum mentok bawah, biarkan scroll internal jalan
+        if (!isScrollAtBottom()) return;
+
+        // Jika sudah mentok bawah, baru pindah ke step berikutnya (jika belum habis)
+        if (currentSlideRef.current < totalSteps.length - 1) {
+          e.preventDefault();
           if (isTransitioning.current) return;
           isTransitioning.current = true;
 
-          const next = currentSlideRef.current + 1;
-          setCurrentSlide(next);
-
-          if (totalSlides[next].type === "pricing") {
-            setSelectedNetwork(totalSlides[next].network as any);
-          } else if (totalSlides[next].type === "gallery") {
-            setGalleryPage(totalSlides[next].page as number);
-          }
+          applyStepData(currentSlideRef.current + 1);
 
           setTimeout(() => {
             isTransitioning.current = false;
-          }, 400);
+          }, 350);
         }
       } else if (e.deltaY < 0) {
+        // Scroll ke atas: Jika konten internal belum mentok atas, biarkan scroll internal jalan
+        if (!isScrollAtTop()) return;
+
+        // Jika sudah mentok atas, baru pindah ke step sebelumnya
         if (currentSlideRef.current > 0) {
-          e.preventDefault(); 
+          e.preventDefault();
           if (isTransitioning.current) return;
           isTransitioning.current = true;
 
-          const prev = currentSlideRef.current - 1;
-          setCurrentSlide(prev);
-
-          if (totalSlides[prev].type === "pricing") {
-            setSelectedNetwork(totalSlides[prev].network as any);
-          } else if (totalSlides[prev].type === "gallery") {
-            setGalleryPage(totalSlides[prev].page as number);
-          }
+          applyStepData(currentSlideRef.current - 1);
 
           setTimeout(() => {
             isTransitioning.current = false;
-          }, 400);
+          }, 350);
         }
       }
     };
 
-    // 2. Handler untuk Touch Screen (Mobile / HP)
+    // Handler Mobile (Touch Swipe)
     const handleTouchStart = (e: TouchEvent) => {
       touchStartY.current = e.touches[0].clientY;
     };
@@ -94,50 +113,38 @@ export default function PricingSection({ currentSlide, setCurrentSlide }: Pricin
       const touchEndY = e.touches[0].clientY;
       const diff = touchStartY.current - touchEndY;
 
-      // Berikan batas ambang (threshold) minimal geseran jari agar tidak terlalu sensitif
-      if (Math.abs(diff) > 30) {
-        // Swipe ke atas (artinya pengguna ingin lanjut ke slide berikutnya / scroll ke bawah)
+      if (Math.abs(diff) > 20) {
         if (diff > 0) {
-          if (currentSlideRef.current < totalSlides.length - 1) {
-            e.preventDefault(); // Kunci layar agar tidak turun bebas
+          // Swipe ke atas (gerakan turun)
+          if (!isScrollAtBottom()) return;
+
+          if (currentSlideRef.current < totalSteps.length - 1) {
+            e.preventDefault();
             if (isTransitioning.current) return;
             isTransitioning.current = true;
 
-            const next = currentSlideRef.current + 1;
-            setCurrentSlide(next);
-
-            if (totalSlides[next].type === "pricing") {
-              setSelectedNetwork(totalSlides[next].network as any);
-            } else if (totalSlides[next].type === "gallery") {
-              setGalleryPage(totalSlides[next].page as number);
-            }
-
-            touchStartY.current = touchEndY; // Reset titik tumpu sentuhan
-            setTimeout(() => {
-              isTransitioning.current = false;
-            }, 450);
-          }
-        } 
-        // Swipe ke bawah (artinya pengguna ingin kembali ke slide sebelumnya / scroll ke atas)
-        else if (diff < 0) {
-          if (currentSlideRef.current > 0) {
-            e.preventDefault(); // Kunci layar agar tidak naik bebas
-            if (isTransitioning.current) return;
-            isTransitioning.current = true;
-
-            const prev = currentSlideRef.current - 1;
-            setCurrentSlide(prev);
-
-            if (totalSlides[prev].type === "pricing") {
-              setSelectedNetwork(totalSlides[prev].network as any);
-            } else if (totalSlides[prev].type === "gallery") {
-              setGalleryPage(totalSlides[prev].page as number);
-            }
-
+            applyStepData(currentSlideRef.current + 1);
             touchStartY.current = touchEndY;
+
             setTimeout(() => {
               isTransitioning.current = false;
-            }, 450);
+            }, 400);
+          }
+        } else if (diff < 0) {
+          // Swipe ke bawah (gerakan naik)
+          if (!isScrollAtTop()) return;
+
+          if (currentSlideRef.current > 0) {
+            e.preventDefault();
+            if (isTransitioning.current) return;
+            isTransitioning.current = true;
+
+            applyStepData(currentSlideRef.current - 1);
+            touchStartY.current = touchEndY;
+
+            setTimeout(() => {
+              isTransitioning.current = false;
+            }, 400);
           }
         }
       }
@@ -152,7 +159,10 @@ export default function PricingSection({ currentSlide, setCurrentSlide }: Pricin
       sectionEl.removeEventListener('touchstart', handleTouchStart);
       sectionEl.removeEventListener('touchmove', handleTouchMove);
     };
-  }, [setCurrentSlide]);
+  }, []);
+
+  const currentStep = totalSteps[currentSlide];
+  const activeMainTab = currentStep.mainTab;
 
   const slideVariants = {
     hidden: { opacity: 0, scale: 0.98, y: 10 },
@@ -161,7 +171,6 @@ export default function PricingSection({ currentSlide, setCurrentSlide }: Pricin
   };
 
   const transitionProps = { duration: 0.2, ease: "easeInOut" as const };
-  const currentStep = totalSlides[currentSlide];
 
   return (
     <motion.section 
@@ -175,7 +184,40 @@ export default function PricingSection({ currentSlide, setCurrentSlide }: Pricin
     >
       <div className="relative w-full flex flex-col">
         
-        <div className="relative w-full min-h-[500px]">
+        {/* Tombol Tab Utama Atas & Indikator Pinned */}
+        <div className="flex flex-col items-center mb-8 gap-3">
+          <div className="flex justify-center items-center gap-3 bg-zinc-950/80 p-1.5 rounded-2xl border border-zinc-800 backdrop-blur-md shadow-lg">
+            {[
+              { id: 0, label: "Paket" },
+              { id: 1, label: "Tim" },
+              { id: 2, label: "Galeri" }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  if (tab.id === 0) applyStepData(0);
+                  if (tab.id === 1) applyStepData(5); 
+                  if (tab.id === 2) applyStepData(6); 
+                }}
+                className={`px-8 py-2.5 rounded-xl font-mono text-xs sm:text-sm font-bold tracking-wider transition-all cursor-pointer ${
+                  activeMainTab === tab.id
+                    ? "bg-emerald-500 text-zinc-950 shadow-md shadow-emerald-500/30 scale-105"
+                    : "text-zinc-400 hover:text-white hover:bg-zinc-900"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          
+        </div>
+
+        {/* Kontainer Scroll Internal (Inner Scroll Container) */}
+        <div 
+          ref={scrollContainerRef}
+          className="relative w-full max-h-[75vh] overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-800 pr-1 sm:pr-2"
+        >
           <AnimatePresence mode="wait">
             
             {currentStep.type === "pricing" && (
@@ -186,7 +228,7 @@ export default function PricingSection({ currentSlide, setCurrentSlide }: Pricin
                 animate="visible"
                 exit="exit"
                 transition={transitionProps}
-                className="w-full flex flex-col justify-center"
+                className="w-full flex flex-col justify-center py-2"
               >
                 <div className="text-center space-y-4 mb-10">
                   <span className="text-xs font-mono tracking-widest uppercase px-4 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-300">
@@ -199,19 +241,14 @@ export default function PricingSection({ currentSlide, setCurrentSlide }: Pricin
                     Pilih jaringan blockchain dan struktur paket layanan profesional untuk peluncuran proyek Anda.
                   </p>
                   
+                  {/* Pilihan Jaringan Blockchain */}
                   <div className="flex flex-wrap justify-center gap-2 sm:gap-3 pt-4">
                     {(["SOLANA", "SUI", "ETH", "BNB", "TRON"] as const).map((net) => {
-                      const targetIndex = totalSlides.findIndex(s => s.network === net);
+                      const targetIndex = totalSteps.findIndex(s => s.network === net);
                       return (
-                        <motion.button
+                        <button
                           key={net}
-                          whileHover={{ scale: 1.06, y: -2 }}
-                          whileTap={{ scale: 0.92 }}
-                          transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                          onClick={() => {
-                            setSelectedNetwork(net);
-                            setCurrentSlide(targetIndex);
-                          }}
+                          onClick={() => applyStepData(targetIndex)}
                           className={`px-5 py-2 rounded-xl font-mono text-xs sm:text-sm font-bold tracking-wider transition-colors shadow-md cursor-pointer select-none ${
                             selectedNetwork === net 
                               ? "bg-emerald-500 text-zinc-950 scale-105 shadow-lg shadow-emerald-500/30" 
@@ -219,13 +256,13 @@ export default function PricingSection({ currentSlide, setCurrentSlide }: Pricin
                           }`}
                         >
                           {net}
-                        </motion.button>
+                        </button>
                       );
                     })}
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch pb-6">
                   {/* Paket Dasar */}
                   <div className="bg-zinc-950/90 border border-zinc-800/80 rounded-3xl p-8 flex flex-col justify-between shadow-xl backdrop-blur-md">
                     <div>
@@ -336,7 +373,7 @@ export default function PricingSection({ currentSlide, setCurrentSlide }: Pricin
                 animate="visible"
                 exit="exit"
                 transition={transitionProps}
-                className="w-full"
+                className="w-full py-2"
               >
                 <TeamSection />
               </motion.div>
@@ -350,7 +387,7 @@ export default function PricingSection({ currentSlide, setCurrentSlide }: Pricin
                 animate="visible"
                 exit="exit"
                 transition={transitionProps}
-                className="w-full"
+                className="w-full py-2"
               >
                 <GallerySection initialPage={galleryPage} />
               </motion.div>
@@ -359,60 +396,8 @@ export default function PricingSection({ currentSlide, setCurrentSlide }: Pricin
           </AnimatePresence>
         </div>
 
-        {/* Tombol Navigasi Antar Slide Bawah */}
-        <div className="flex items-center justify-center gap-6 mt-16 pt-4 z-30">
-          <button 
-            onClick={() => {
-              if (currentSlide > 0) {
-                const prev = currentSlide - 1;
-                setCurrentSlide(prev);
-                if (totalSlides[prev].type === "pricing") setSelectedNetwork(totalSlides[prev].network as any);
-                if (totalSlides[prev].type === "gallery") setGalleryPage(totalSlides[prev].page as number);
-              }
-            }} 
-            disabled={currentSlide === 0} 
-            className="px-5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 font-mono text-xs hover:bg-zinc-800 disabled:opacity-30 cursor-pointer"
-          >
-            ← Sebelumnya
-          </button>
-          
-          <div className="flex items-center gap-1 overflow-x-auto py-2">
-            {totalSlides.map((s, i) => (
-              <button 
-                key={i} 
-                onClick={() => {
-                  setCurrentSlide(i);
-                  if (s.type === "pricing") setSelectedNetwork(s.network as any);
-                  if (s.type === "gallery") setGalleryPage(s.page as number);
-                }} 
-                className={`px-3 py-1.5 rounded-lg font-mono text-xs cursor-pointer whitespace-nowrap ${
-                  currentSlide === i 
-                    ? "bg-emerald-500 text-zinc-950 font-bold shadow-md shadow-emerald-500/30" 
-                    : "bg-zinc-900 text-zinc-400 border border-zinc-800 hover:text-white"
-                }`}
-              >
-                {s.type === "pricing" ? s.network : (s.type === "team" ? "Tim" : `Galeri ${s.page! + 1}`)}
-              </button>
-            ))}
-          </div>
-
-          <button 
-            onClick={() => {
-              if (currentSlide < totalSlides.length - 1) {
-                const next = currentSlide + 1;
-                setCurrentSlide(next);
-                if (totalSlides[next].type === "pricing") setSelectedNetwork(totalSlides[next].network as any);
-                if (totalSlides[next].type === "gallery") setGalleryPage(totalSlides[next].page as number);
-              }
-            }} 
-            disabled={currentSlide === totalSlides.length - 1} 
-            className="px-5 py-2.5 rounded-xl font-mono text-xs cursor-pointer bg-emerald-500 text-zinc-950 font-bold shadow-md shadow-emerald-500/30 disabled:opacity-30"
-          >
-            Selanjutnya →
-          </button>
-        </div>
-
-        <div className="w-full border-t border-zinc-800/60 mt-8" />
+        {/* Garis Pemisah Footer */}
+        <div className="w-full border-t border-zinc-800/60 mt-12" />
 
       </div>
     </motion.section>
