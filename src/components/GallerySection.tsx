@@ -1,13 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
-interface GallerySectionProps {
-  currentTheme: {
-    bgBtn: string; // Warna background tombol tema aktif dari navbar utama
-  };
-}
 
 const galleryPage1 = [
   { title: "Keuntungan Investasi Crypto", img: "https://res.cloudinary.com/slqx0rzq/image/upload/v1786636536/miles-morales-in-spider-man-into-the-spider-verse_3840x2160_xtrafondos.com_fg8rxe.jpg", link: "https://instagram.com" },
@@ -30,13 +24,21 @@ const galleryPage2 = [
   { title: "Dirgahayu Republik Indonesia", img: "https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=800", link: "https://instagram.com" },
 ];
 
-export default function GallerySection({ currentTheme }: GallerySectionProps) {
-  const [galleryPage, setGalleryPage] = useState<number>(0);
+interface GallerySectionProps {
+  initialPage?: number;
+}
+
+export default function GallerySection({ initialPage = 0 }: GallerySectionProps) {
+  const [galleryPage, setGalleryPage] = useState<number>(initialPage);
+
+  useEffect(() => {
+    setGalleryPage(initialPage);
+  }, [initialPage]);
+
   const activeData = galleryPage === 0 ? galleryPage1 : galleryPage2;
 
   return (
     <div className="w-full flex flex-col items-center">
-      {/* Header Galeri */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -46,7 +48,6 @@ export default function GallerySection({ currentTheme }: GallerySectionProps) {
       >
         <h2 className="text-3xl sm:text-5xl font-extrabold text-white mb-6">Galeri Instagram</h2>
         
-        {/* Tombol Pindah Halaman yang warnanya sinkron dengan tema utama */}
         <div className="flex justify-center items-center gap-3">
           <motion.button 
             whileHover={{ scale: 1.05 }}
@@ -54,7 +55,7 @@ export default function GallerySection({ currentTheme }: GallerySectionProps) {
             onClick={() => setGalleryPage(0)}
             className={`px-5 py-2.5 rounded-xl font-bold transition text-sm sm:text-base cursor-pointer shadow-md ${
               galleryPage === 0 
-                ? `${currentTheme?.bgBtn || "bg-white text-zinc-950"} shadow-lg` 
+                ? "bg-emerald-500 text-zinc-950 shadow-lg shadow-emerald-500/30" 
                 : "bg-zinc-900 text-zinc-300 border border-zinc-800 hover:bg-zinc-800"
             }`}
           >
@@ -67,7 +68,7 @@ export default function GallerySection({ currentTheme }: GallerySectionProps) {
             onClick={() => setGalleryPage(1)}
             className={`px-5 py-2.5 rounded-xl font-bold transition text-sm sm:text-base cursor-pointer shadow-md ${
               galleryPage === 1 
-                ? `${currentTheme?.bgBtn || "bg-white text-zinc-950"} shadow-lg` 
+                ? "bg-emerald-500 text-zinc-950 shadow-lg shadow-emerald-500/30" 
                 : "bg-zinc-900 text-zinc-300 border border-zinc-800 hover:bg-zinc-800"
             }`}
           >
@@ -76,7 +77,6 @@ export default function GallerySection({ currentTheme }: GallerySectionProps) {
         </div>
       </motion.div>
 
-      {/* Grid Container */}
       <AnimatePresence mode="wait">
         <motion.div 
           key={galleryPage}

@@ -4,15 +4,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
-interface TeamSectionProps {
-  currentTheme: {
-    primary: string;
-    bgBtn: string;
-    border: string;
-    glow: string;
-  };
-}
-
 const teamMembers = [
   { 
     id: 1, 
@@ -56,7 +47,7 @@ const teamMembers = [
   },
 ];
 
-export default function TeamSection({ currentTheme }: TeamSectionProps) {
+export default function TeamSection() {
   const [activeTab, setActiveTab] = useState<"semua" | "tim" | "magang">("semua");
 
   const filteredMembers = teamMembers.filter((member) => {
@@ -77,11 +68,10 @@ export default function TeamSection({ currentTheme }: TeamSectionProps) {
           Orang-orang hebat di balik inovasi dan kesuksesan proyek Genesis.
         </p>
 
-        {/* Tombol Tautan Langsung ke Halaman Alumni */}
         <div className="pt-2">
           <Link
             href="/alumni"
-            className={`inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-mono text-sm uppercase tracking-wider ${currentTheme.bgBtn} text-zinc-950 font-bold shadow-lg hover:scale-105 transition-all cursor-pointer`}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-mono text-sm uppercase tracking-wider bg-emerald-500 text-zinc-950 font-bold shadow-lg shadow-emerald-500/30 hover:scale-105 hover:bg-emerald-400 transition-all cursor-pointer"
           >
             <span>Lihat Halaman Alumni</span>
             <span>→</span>
@@ -95,7 +85,7 @@ export default function TeamSection({ currentTheme }: TeamSectionProps) {
               onClick={() => setActiveTab(tab)}
               className={`px-5 py-2.5 rounded-xl font-mono text-sm uppercase tracking-wider transition-all cursor-pointer ${
                 activeTab === tab
-                  ? `${currentTheme.bgBtn} text-zinc-950 font-bold shadow-lg scale-105`
+                  ? "bg-emerald-500 text-zinc-950 font-bold shadow-lg shadow-emerald-500/30 scale-105"
                   : "bg-zinc-900/80 text-zinc-400 border border-zinc-800 hover:bg-zinc-800 hover:text-white"
               }`}
             >
@@ -105,11 +95,11 @@ export default function TeamSection({ currentTheme }: TeamSectionProps) {
         </div>
       </div>
 
-      <div className="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch justify-items-center min-h-100">
+      <div className="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch justify-items-center min-h-[400px]">
         {filteredMembers.length > 0 ? (
           filteredMembers.map((member, index) => (
             <div key={member.id} className="w-full max-w-md">
-              {placeholderCard(member, index, currentTheme)}
+              {placeholderCard(member, index)}
             </div>
           ))
         ) : (
@@ -122,7 +112,7 @@ export default function TeamSection({ currentTheme }: TeamSectionProps) {
   );
 }
 
-function placeholderCard(member: any, index: number, currentTheme: any) {
+function placeholderCard(member: any, index: number) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -132,7 +122,7 @@ function placeholderCard(member: any, index: number, currentTheme: any) {
       className="w-full bg-zinc-950/80 border border-zinc-800/80 hover:border-zinc-700 rounded-3xl p-6 flex flex-col sm:flex-row items-center gap-6 shadow-xl backdrop-blur-md transition-all group"
     >
       <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0 relative overflow-hidden group-hover:border-zinc-700 transition">
-        <div className="absolute inset-0 bg-linear-to-br from-zinc-800/20 to-transparent opacity-50" />
+        <div className="absolute inset-0 bg-gradient-to-br from-zinc-800/20 to-transparent opacity-50" />
         {member.image ? (
           <img src={member.image} alt={member.name} className="w-full h-full object-cover z-10" />
         ) : (
@@ -144,7 +134,7 @@ function placeholderCard(member: any, index: number, currentTheme: any) {
         <div>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-1">
             <h3 className="text-2xl font-bold text-zinc-100 font-serif">{member.name}</h3>
-            <span className={`text-sm font-mono uppercase tracking-wider px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 ${currentTheme.primary} w-fit mx-auto sm:mx-0`}>
+            <span className="text-sm font-mono uppercase tracking-wider px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-emerald-400 font-semibold w-fit mx-auto sm:mx-0">
               {member.role}
             </span>
           </div>

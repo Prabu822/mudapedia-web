@@ -69,7 +69,7 @@ export default function AlumniPage() {
 
   return (
     <div className="w-full min-h-screen bg-zinc-950 text-zinc-50 py-16 px-4 sm:px-6 flex flex-col items-center">
-      {/* Tombol kembali langsung mengarah ke beranda bagian team (#team) */}
+      {/* Tombol kembali langsung mengarah ke beranda bagian team */}
       <div className="w-full max-w-5xl mb-10">
         <Link 
           href="/" 
@@ -115,7 +115,6 @@ export default function AlumniPage() {
               <div>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                   <h3 className="text-2xl sm:text-3xl font-bold text-zinc-100 font-serif">{alumni.name}</h3>
-                  {/* Ditambahkan whitespace-nowrap dan ukuran teks yang pas agar tetap rapi dalam satu baris */}
                   <span className={`text-xs sm:text-sm font-mono uppercase tracking-wider px-3.5 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 ${currentTheme.primary} whitespace-nowrap w-fit mx-auto sm:mx-0`}>
                     {alumni.role}
                   </span>
