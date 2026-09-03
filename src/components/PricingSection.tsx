@@ -31,20 +31,22 @@ export default function PricingSection({ currentSlide, setCurrentSlide }: Pricin
   const isTransitioning = useRef(false);
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Ref untuk mendeteksi nilai terbaru di dalam event listener wheel
+  // Ref untuk mendeteksi nilai terbaru di dalam event listener
   const currentSlideRef = useRef(currentSlide);
   currentSlideRef.current = currentSlide;
 
-  // --- LOGIKA SMOOTH SCROLL-LOCKING ---
+  const touchStartY = useRef<number>(0);
+
+  // --- LOGIKA SCROLL-LOCKING & TOUCH SWIPE (DESKTOP & MOBILE) ---
   useEffect(() => {
     const sectionEl = sectionRef.current;
     if (!sectionEl) return;
 
+    // 1. Handler untuk Mouse Wheel (Desktop)
     const handleWheel = (e: WheelEvent) => {
-      // Scroll ke bawah
       if (e.deltaY > 0) {
         if (currentSlideRef.current < totalSlides.length - 1) {
-          e.preventDefault(); // Menahan halaman agar terkunci di dalam section
+          e.preventDefault(); 
           if (isTransitioning.current) return;
           isTransitioning.current = true;
 
@@ -59,14 +61,11 @@ export default function PricingSection({ currentSlide, setCurrentSlide }: Pricin
 
           setTimeout(() => {
             isTransitioning.current = false;
-          }, 400); // Jeda transisi agar mulus
+          }, 400);
         }
-        // Jika sudah di slide terakhir (Galeri Halaman 2), izinkan halaman lanjut scroll ke bawah normal
-      } 
-      // Scroll ke atas
-      else if (e.deltaY < 0) {
+      } else if (e.deltaY < 0) {
         if (currentSlideRef.current > 0) {
-          e.preventDefault(); // Menahan halaman agar terkunci dari scroll bebas ke atas
+          e.preventDefault(); 
           if (isTransitioning.current) return;
           isTransitioning.current = true;
 
@@ -83,14 +82,75 @@ export default function PricingSection({ currentSlide, setCurrentSlide }: Pricin
             isTransitioning.current = false;
           }, 400);
         }
-        // Jika sudah di slide pertama (Solana), izinkan halaman scroll ke atas secara normal keluar section
+      }
+    };
+
+    // 2. Handler untuk Touch Screen (Mobile / HP)
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY.current = e.touches[0].clientY;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      const touchEndY = e.touches[0].clientY;
+      const diff = touchStartY.current - touchEndY;
+
+      // Berikan batas ambang (threshold) minimal geseran jari agar tidak terlalu sensitif
+      if (Math.abs(diff) > 30) {
+        // Swipe ke atas (artinya pengguna ingin lanjut ke slide berikutnya / scroll ke bawah)
+        if (diff > 0) {
+          if (currentSlideRef.current < totalSlides.length - 1) {
+            e.preventDefault(); // Kunci layar agar tidak turun bebas
+            if (isTransitioning.current) return;
+            isTransitioning.current = true;
+
+            const next = currentSlideRef.current + 1;
+            setCurrentSlide(next);
+
+            if (totalSlides[next].type === "pricing") {
+              setSelectedNetwork(totalSlides[next].network as any);
+            } else if (totalSlides[next].type === "gallery") {
+              setGalleryPage(totalSlides[next].page as number);
+            }
+
+            touchStartY.current = touchEndY; // Reset titik tumpu sentuhan
+            setTimeout(() => {
+              isTransitioning.current = false;
+            }, 450);
+          }
+        } 
+        // Swipe ke bawah (artinya pengguna ingin kembali ke slide sebelumnya / scroll ke atas)
+        else if (diff < 0) {
+          if (currentSlideRef.current > 0) {
+            e.preventDefault(); // Kunci layar agar tidak naik bebas
+            if (isTransitioning.current) return;
+            isTransitioning.current = true;
+
+            const prev = currentSlideRef.current - 1;
+            setCurrentSlide(prev);
+
+            if (totalSlides[prev].type === "pricing") {
+              setSelectedNetwork(totalSlides[prev].network as any);
+            } else if (totalSlides[prev].type === "gallery") {
+              setGalleryPage(totalSlides[prev].page as number);
+            }
+
+            touchStartY.current = touchEndY;
+            setTimeout(() => {
+              isTransitioning.current = false;
+            }, 450);
+          }
+        }
       }
     };
 
     sectionEl.addEventListener('wheel', handleWheel, { passive: false });
+    sectionEl.addEventListener('touchstart', handleTouchStart, { passive: true });
+    sectionEl.addEventListener('touchmove', handleTouchMove, { passive: false });
 
     return () => {
       sectionEl.removeEventListener('wheel', handleWheel);
+      sectionEl.removeEventListener('touchstart', handleTouchStart);
+      sectionEl.removeEventListener('touchmove', handleTouchMove);
     };
   }, [setCurrentSlide]);
 
